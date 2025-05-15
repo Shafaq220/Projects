@@ -9,15 +9,15 @@ This repository contains different projects.
 1. [Bioinformatics](#bioinformatics)  
 2. [Machine Learning](#machine-learning)  
 3. [Deep Learning](#deep-learning)     
-4. [Contact](#contact)
+
 
 ---
 
 ## Bioinformatics
 
-This bioinformatics project, explores the evolutionary lineage of chickens through phylogenetic analysis. The key objective is to determine whether the egg came before the chicken based on genetic and evolutionary data.
+This bioinformatics project explores the evolutionary lineage of chickens through phylogenetic analysis. The key objective is determining whether the egg came before the chicken based on genetic and evolutionary data.
 **Key Objectives**:
-- Protein Sequence Analysis: Retrieve and analyze protein sequence of egg protein of chicken.
+- Protein Sequence Analysis: Retrieve and analyze the protein sequence of the egg protein of the chicken.
 - Multiple Sequence Alignment (MSA): Perform multiple sequence alignments to study evolutionary relationships.
 - Phylogenetic Tree Construction and Visualization: Construct and visualize phylogenetic trees to understand ancestral lineages.
 - Gene Expression Analysis: Analyze gene expression data for insights into evolutionary biology, particularly focusing on neural development.
@@ -34,7 +34,9 @@ The phylogenetic tree visualization is enhanced using the ggtree package
 Step 5: Gene Expression Analysis
 Analyzing gene expression data aids in identifying differentially expressed genes related to neural development. This involves using tools like GEOquery and limma to retrieve and analyze data
 
-
+**Supplementary files**:
+- GDS4131.soft
+- combined_sequences.fasta
 ---
 
 ## Machine Learning
@@ -42,10 +44,10 @@ The goal was to use the gene expression data of several Pancreatic ductal adenoc
 • Dataset GSE71729 downloadable from the GEO website
 
 **Key Tasks**:
-1. Predict Cancer Subtypes Based on Gene Signatures: the gene expression data from the PDAC primary samples was used to predict cancer subtypes.
+1. Predict Cancer Subtypes Based on Gene Signatures: The gene expression data from the PDAC primary samples was used to predict cancer subtypes.
 Objective: Build a machine learning model that can classify PDAC samples into their respective subtypes based on gene expression patterns.
 
-2. Identify Top N Most Important Genes: identify the most important genes that help distinguish between the different PDAC subtypes. Feature selection techniques like Random Forest feature importance was used to identify the most relevant genes.
+2. Identify Top N Most Important Genes: Identify the most important genes that help distinguish between the different PDAC subtypes. Feature selection techniques like Random Forest feature importance was used to identify the most relevant genes.
 Objective: Select the top N genes (e.g., top 10, top 20) based on their importance scores.
 
 3. Build Models Using Only Important Features
@@ -56,16 +58,16 @@ Objective: To simplify the model by reducing the number of features and to evalu
 ---
 
 ## Deep Learning
-This project is designed to demonstrate a comprehensive approach to analyzing colorectal cancer data using deep learning techniques. The goal was to distinguish between tumor and normal tissue based on proteomic data, highlighting critical steps in data preprocessing, model selection, hyperparameter tuning, and evaluation.
+This project demonstrates a comprehensive approach to analyzing colorectal cancer data using deep learning techniques. The goal was to distinguish between tumor and normal tissue based on proteomic data, highlighting critical steps in data preprocessing, model selection, hyperparameter tuning, and evaluation.
 
 **Objectives**:
-- Developing robust pipeline for processing proteomic data
+- Developing a robust pipeline for processing proteomic data
 - Developing neural network models tailored to classify tumor and normal tissues in colorectal cancer research
-- Emphasize on careful data preparation, feature engineering, model optimization, and validation to achieve reliable predictive performance
+- Emphasize careful data preparation, feature engineering, model optimization, and validation to achieve reliable predictive performance
 - Use of normalization, structured hyperparameter tuning, and visualization for understanding and enhancing model insights
 
 ---
 
-## Contact
+
 
 
