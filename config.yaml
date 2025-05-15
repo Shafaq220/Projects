@@ -1,0 +1,14 @@
+data:
+  gene_expression_path: "C:/Users/sharm/Desktop/UNI/1. Sem Python/data provided/gene expression.csv"
+  gene_signatures_path: "C:/Users/sharm/Desktop/UNI/1. Sem Python/data provided/gene signatures.csv"
+  metadata_path: "C:/Users/sharm/Desktop/UNI/1. Sem Python/data provided/metadata.csv"
+
+hyperparameters:
+  random_forest:
+    n_estimators: [50, 100, 200]
+    max_depth: [None, 10, 20, 30]
+    min_samples_split: [2, 5, 10]
+
+  svm:
+    C: [0.1, 1, 10]
+    kernel: ["linear", "rbf"]

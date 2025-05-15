@@ -1,0 +1,213 @@
+---
+title: "Bioinformatics project"
+author: "Shafaq Sharma"
+date: "2023-07-22"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Introduction
+This project aims to explore the evolutionary lineage of chickens through phylogenetic analysis, with a focus on determining whether the egg came before the chicken based on genetic and evolutionary data.
+
+## Objectives
+Retrieve and analyze protein sequences related to chickens.
+Perform multiple sequence alignments to study evolutionary relationships.
+Construct and visualize phylogenetic trees.
+Analyze gene expression data for insights into evolutionary biology.
+
+### Data Collection
+
+```{r}
+# 1. Install required packages if not already installed
+
+packages <- c("ape", "phangorn", "ggplot2", "ggtree", "rentrez","igraph", "msa","Biostrings","seqinr","phytools","GEOquery","limma", "ggrepel")
+new_packages <- packages[!(packages %in% installed.packages()[,"Package"])]
+if(length(new_packages)) install.packages(new_packages)
+```
+
+
+```{r}
+# 2. Load libraries
+
+library(Biostrings)
+library(seqinr)
+library(rentrez)
+library(igraph)
+library(ape)
+library(phangorn)
+library(phytools)
+library(ggplot2)
+library(ggtree)
+library(msa)
+library(GEOquery)
+library(limma)
+library(ggrepel) 
+
+```
+
+# Methodology
+## Step 1: Retrieving Protein Sequence
+Fetch the protein sequence from NCBI using the Entrez tool. For this project, the UniProt ID for chicken ovalbumin is used:
+
+
+```{r}
+
+entrez_id <- "P01012" # UniProt ID for chicken ovalbumin
+protein_record <- tryCatch({
+  entrez_fetch(db = "protein", id = entrez_id, rettype = "fasta")
+}, error = function(e) {
+  cat("Error fetching protein sequence:", e$message, "\n")
+  return(NULL)
+})
+
+if (!is.null(protein_record)) {
+  cat(protein_record)
+}
+
+```
+## Step 2: Multiple Sequence Alignment (MSA)
+The sequences are read from a FASTA file and aligned using the ClustalW method:
+
+```{r}
+# Set working directory
+setwd("C:/Users/sharm/Desktop/UNI/bioinformatics/")
+
+# Check if file exists
+fasta_file_path <- "combined_sequences.fasta"
+if (file.exists(fasta_file_path)) {
+  sequences <- readAAStringSet(fasta_file_path)
+
+  # Perform multiple sequence alignment using ClustalW method
+  alignment <- msa(sequences, method = "ClustalW")
+  
+  # Print alignment result summary
+  print(alignment)
+} else {
+  cat("FASTA file not found!\n")
+}
+```
+## Step 3: Phylogenetic Tree Construction
+From the MSA results, calculate a distance matrix and construct a phylogenetic tree using the neighbor-joining method:
+
+```{r}
+if (exists("alignment")) {
+  # Convert the MSA result to 'phyDat' format for ape
+  alignment_phyDat <- as.phyDat(alignment)
+
+  # Calculate the distance matrix
+  dist_matrix <- tryCatch({
+    dist.ml(alignment_phyDat)
+  }, warning = function(w) {
+    cat("Warning in distance calculation:", w$message, "\n")
+    NULL
+  }, error = function(e) {
+    cat("Error in distance calculation:", e$message, "\n")
+    NULL
+  })
+
+  if (!is.null(dist_matrix)) {
+    # Construct a phylogenetic tree using the neighbor-joining method
+    phylo_tree <- nj(dist_matrix)
+
+    # Plot the phylogenetic tree
+    plot(phylo_tree, main = "Phylogenetic Tree of Combined Sequences")
+  }
+}
+
+```
+
+## Step 4: Phylogenetic Tree Visualization
+The phylogenetic tree is enhanced using ggtree:
+
+```{r}
+if (exists("phylo_tree")) {
+  ggtree(phylo_tree) +
+    geom_tiplab() +
+    theme_tree2() +
+    ggtitle("Enhanced Phylogenetic Tree Visualization")
+}
+```
+
+
+## Step 5: Gene Expression Analysis
+Gene expression data is retrieved and analyzed to find differentially expressed genes related to neural development:
+
+```{r}
+soft_file_path <- "C:/Users/sharm/Desktop/UNI/bioinformatics/GDS4131.soft"
+
+if (file.exists(soft_file_path)) {
+  gds <- getGEO(filename = soft_file_path)
+  exprs_data <- Table(gds)
+  
+  # Convert expression data to numeric
+  expr_values <- exprs_data[,grep("^GSM", colnames(exprs_data))]
+  expr_matrix <- tryCatch({
+    as.matrix(sapply(expr_values, as.numeric))
+  }, warning = function(w) {
+    cat("Warning in matrix conversion:", w$message, "\n")
+    NULL
+  }, error = function(e) {
+    cat("Error in matrix conversion:", e$message, "\n")
+    NULL
+  })
+
+  # Set row names to gene identifiers
+  rownames(expr_matrix) <- exprs_data$IDENTIFIER
+}
+```
+
+
+```{r}
+
+if (!is.null(expr_matrix)) {
+  sample_groups <- factor(c(rep("neural_fold", 4), rep("neural_plate", 4)))
+
+  # Design matrix for linear modeling
+  design <- model.matrix(~0 + sample_groups)
+  colnames(design) <- levels(sample_groups)
+
+  fit <- lmFit(expr_matrix, design)
+  contrast_matrix <- makeContrasts(neural_fold_vs_neural_plate = neural_fold - neural_plate, levels=design)
+  fit2 <- contrasts.fit(fit, contrast_matrix)
+  fit2 <- eBayes(fit2)
+
+  # Retrieve Top Differentially Expressed Genes with stricter cutoffs
+  top_genes <- topTable(fit2, number = Inf, adjust.method = "BH")
+
+  # Define the threshold for significance
+  logFC_threshold <- 1  # Adjust as needed
+  pval_threshold <- 0.01
+
+  # Filter significantly up- and down-regulated genes with stricter criteria
+  significant_up <- top_genes[top_genes$logFC > logFC_threshold & top_genes$adj.P.Val < pval_threshold, ]
+  significant_down <- top_genes[top_genes$logFC < -logFC_threshold & top_genes$adj.P.Val < pval_threshold, ]
+
+  # Print or view results
+  cat("Significantly Up-regulated Genes:\n")
+  print(head(significant_up))
+
+  cat("\nSignificantly Down-regulated Genes:\n")
+  print(head(significant_down))
+
+  # Save the results to CSV files
+  write.csv(significant_up, file="significant_up.csv", row.names=FALSE)
+  write.csv(significant_down, file="significant_down.csv", row.names=FALSE)
+
+  # Plot Volcano Plot with clear highlights
+  volcanoplot(fit2, highlight=10, main="Volcano Plot", names=rownames(top_genes))
+}
+
+
+```
+
+
+
+
+
+
