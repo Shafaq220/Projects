@@ -7,14 +7,9 @@ This repository contains different projects.
 ## Table of Contents
 
 1. [Bioinformatics](#bioinformatics)  
-2. [Features](#features)  
-3. [Live Demo](#live-demo)  
-4. [Installation](#installation)  
-5. [Usage](#usage)  
-6. [Directory Structure](#directory-structure)  
-7. [References & Data Sources](#references--data-sources)  
-8. [License](#license)  
-9. [Contact](#contact)
+2. [Machine Learning](#machine-learning)  
+3. [Deep Learning](#deep-learning)     
+4. [Contact](#contact)
 
 ---
 
@@ -68,3 +63,9 @@ This project is designed to demonstrate a comprehensive approach to analyzing co
 - Developing neural network models tailored to classify tumor and normal tissues in colorectal cancer research
 - Emphasize on careful data preparation, feature engineering, model optimization, and validation to achieve reliable predictive performance
 - Use of normalization, structured hyperparameter tuning, and visualization for understanding and enhancing model insights
+
+---
+
+## Contact
+
+
