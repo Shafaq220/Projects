@@ -55,6 +55,8 @@ Objective: To simplify the model by reducing the number of features and to evalu
 
 4. Compare the Performance and Stability of Two Prediction Models: compare the performance and stability of two machine learning algorithms
 
+**Supplementary files**:
+- config.yaml
 ---
 
 ## Deep Learning
